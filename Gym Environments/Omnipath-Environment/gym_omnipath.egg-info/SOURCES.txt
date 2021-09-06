@@ -1,0 +1,7 @@
+README.md
+setup.py
+gym_omnipath.egg-info/PKG-INFO
+gym_omnipath.egg-info/SOURCES.txt
+gym_omnipath.egg-info/dependency_links.txt
+gym_omnipath.egg-info/requires.txt
+gym_omnipath.egg-info/top_level.txt

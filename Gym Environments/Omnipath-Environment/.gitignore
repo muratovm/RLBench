@@ -1,0 +1,4 @@
+.ipynb_checkpoints
+__pycache__
+gym_omnnipath/__pycache__
+gym_omnnipath/envs/__pycache__

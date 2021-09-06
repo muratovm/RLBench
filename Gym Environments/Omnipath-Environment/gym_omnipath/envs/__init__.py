@@ -1,0 +1,2 @@
+from gym_omnipath.envs.omnipath_env import OmnipathEnv
+#from gym_omnipath.envs.omnipath_extrahard_env import OmnipathExtraHardEnv
