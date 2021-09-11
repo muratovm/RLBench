@@ -10,7 +10,6 @@ class TicTacToeEnv(gym.Env):
         self.signing = {}
         self.reset()
 
-
     def reset(self):
         self.board = np.zeros((self.dim,self.dim))
         self.done = False
@@ -34,7 +33,7 @@ class TicTacToeEnv(gym.Env):
             if self.board[y,x] == 0:
                 self.board[y,x] = element
                 self.moves += 1
-                self.win = self.win_condition((x,y))
+                self.win = self.win_move((x,y))
                 self.done = self.win or self.moves == self.dim**2
                 if self.win: 
                     self.winner = agent.name
@@ -52,7 +51,11 @@ class TicTacToeEnv(gym.Env):
                 print(self.mapping[self.board[y][x]], end="")
             print()
 
-    def win_condition(self, last_move):
+
+    def state_reward(self, board):
+        return int(self.win_board(board))
+
+    def win_move(self, last_move):
         x,y = last_move
 
         #check row and column
@@ -70,3 +73,65 @@ class TicTacToeEnv(gym.Env):
 
         #did someone win?
         return row or col or diag1 or diag2
+
+
+    def win_board(self, board):
+
+        wins_conditions = np.ones(2*(self.dim+1))
+        counter = 0
+
+        #check rows
+        for i in range(len(board)):
+            if board[i][0] != 0:
+                first = board[i][0]
+                for j in range(len(board[0])):
+                    if board[i][j] == first: continue
+                    else: 
+                        wins_conditions[counter] = 0 
+                        break
+            else:
+                wins_conditions[counter] = 0
+            counter += 1
+
+        #check cols
+        for j in range(len(board[0])):
+            if board[0][j] != 0:
+                first = board[0][j]
+                for i in range(len(board)):
+                    if board[i][j] == first: continue
+                    else: 
+                        wins_conditions[counter] = 0 
+                        break
+            else:
+                wins_conditions[counter] = 0 
+            counter += 1
+
+        # check diagonals
+        for i in range(self.dim):
+            if board[0][0] != 0:
+                if board[i][i] == board[0][0]: continue
+                else:
+                    wins_conditions[counter] = 0 
+                    break
+            else:
+                wins_conditions[counter] = 0 
+        counter += 1
+
+        for i in range(self.dim):
+            if board[0][self.dim-1] != 0:
+                if board[i][self.dim-1-i] == board[0][self.dim-1]: continue
+                else: 
+                    wins_conditions[counter] = 0 
+                    break
+            else:
+                wins_conditions[counter] = 0 
+        counter += 1
+
+        #print(counter)
+        #print(wins_conditions)
+        #print(np.ones(2*(self.dim+1)))
+        return any(wins_conditions)
+        
+
+
+

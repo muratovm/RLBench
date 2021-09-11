@@ -93,8 +93,6 @@ class SmartAgent(nn.Module):
             return best_move
         
         return None
-        
-        
 
     def forward(self, board, row = None, col = None):
         if row != None and col != None:
