@@ -23,19 +23,27 @@ class TicTacToeEnv(gym.Env):
         self.signing[agent.sign] = self.players
         
     def step(self, action):
+        #if there's a valid action
+        reward = 0
         if action[0]:
             x,y = action[0]
             agent = action[1]
             element = self.signing[agent.sign]
 
-            self.board[y,x] = element
-            self.moves += 1
-            self.win = self.win_condition((x,y))
-            #self.filled = not all(self.board[x,y]==0 for y in range(3) for x in range(3))
-            self.done = self.win or self.moves == self.dim**2
-            if self.win: self.winner = agent.name
+            #if the slot was not taken before
+            if self.board[y,x] == 0:
+                self.board[y,x] = element
+                self.moves += 1
+                self.win = self.win_condition((x,y))
+                self.done = self.win or self.moves == self.dim**2
+                if self.win: 
+                    self.winner = agent.name
+                    reward = 1
 
-        return self.done 
+            else:
+                reward = -1
+
+        return reward, self.done 
 
     
     def render(self):
