@@ -52,11 +52,24 @@ class TicTacToeEnv(gym.Env):
             print()
 
 
-    def state_reward(self, board):
+    def state_reward(self, board, agent):
+        winner = self.win_board(board)
+        if winner:
+            sign = self.mapping[winner]
+            #figure out who won
+            if sign == agent.sign:
+                #print("Bot would win")
+                #print(board)
+                return 1
+            else:
+                #print("Michael would win")
+                #print(board)
+                return -1
 
-        if self.win_board(board):
-            return 1
-        return 0
+        elif self.board_filled(board):
+            return 0.5
+
+        return None
 
     def win_move(self, last_move):
         x,y = last_move

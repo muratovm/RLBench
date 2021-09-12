@@ -74,45 +74,53 @@ class MinimaxAgent(Agent):
         best_option = None
         best_value = np.NINF
 
+        alpha = np.NINF
+        beta = np.inf
+
         for option in options:
             new_board = self.env.modify_board(board, option, self.sign)
-            value = self.minimax(new_board, self.depth, False)
+            value = self.minimax(new_board, alpha , beta , self.depth, False)
+            print(new_board)
+            print("Value of this option: {}".format(value))
             if value > best_value:
                 best_option = option
                 best_value = value
         return best_option
-
-    def minimax(self, board, depth, is_max):
-
-        winner = self.env.win_board(board)
-
-        if winner:
-            sign = self.env.mapping[winner]
-            if sign == self.sign:
-                return self.env.state_reward(board)
-            else:
-                return -1 * self.env.state_reward(board)
-
-
-        if depth == 0 or self.env.board_filled(board):
-            return 0
+ 
+ 
+    def minimax(self, board, alpha, beta, depth, is_max):
             
-        options = self.possible_moves(board)
+            #if in winning board configuration
+            reward =  self.env.state_reward(board, self)
+            if reward: return reward
 
-        if is_max:
-            value = np.NINF
-            for option in options:
-                new_board = self.env.modify_board(board, option, self.sign)
-                value = max(value, self.minimax(new_board, depth-1, False))
-            return value
+            #otherwise if reached the end
+            if depth == 0:
+                return 0
+                
+            options = self.possible_moves(board)
 
+            #maxing layer
+            if is_max:
+                value = np.NINF
+                for option in options:
+                    new_board = self.env.modify_board(board, option, self.sign)
+                    value = max(value, self.minimax(new_board, alpha, beta, depth-1, False))
+                    if beta <= alpha:
+                        break
+                    alpha = max(alpha, value)
+                return value
 
-        else:
-            value = np.inf
-            for option in options:
-                new_board = self.env.modify_board(board, option, self.op_sign)
-                value = min(value, self.minimax(new_board, depth-1, True))
-            return value
+            #minimizing layer
+            else:
+                value = np.inf
+                for option in options:
+                    new_board = self.env.modify_board(board, option, self.op_sign)
+                    value = min(value, self.minimax(new_board, alpha, beta, depth-1, True))
+                    if beta <= alpha:
+                        break
+                    beta = min(beta, value)
+                return value
 
         
 
