@@ -53,7 +53,10 @@ class TicTacToeEnv(gym.Env):
 
 
     def state_reward(self, board):
-        return int(self.win_board(board))
+
+        if self.win_board(board):
+            return 1
+        return 0
 
     def win_move(self, last_move):
         x,y = last_move
@@ -73,7 +76,6 @@ class TicTacToeEnv(gym.Env):
 
         #did someone win?
         return row or col or diag1 or diag2
-
 
     def win_board(self, board):
 
@@ -126,11 +128,26 @@ class TicTacToeEnv(gym.Env):
             else:
                 wins_conditions[counter] = 0 
         counter += 1
+        
+        if any(wins_conditions):
+            for i in range(len(wins_conditions)):
+                if wins_conditions[i] == 1:
+                    if i %3 == 0: return board[0][0]
+                    elif i %3 == 1: return board[1][1]
+                    elif i %3 == 2: return board[2][2]
+        return None
 
-        #print(counter)
-        #print(wins_conditions)
-        #print(np.ones(2*(self.dim+1)))
-        return any(wins_conditions)
+
+    def modify_board(self, board, position, sign):
+        board = board.copy()
+        x,y = position
+        element = self.signing[sign]
+        board[y,x] = element
+        return board
+
+    def board_filled(self, board):
+        return not np.isin(0, board)
+
         
 
 
